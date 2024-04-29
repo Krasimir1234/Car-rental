@@ -9,8 +9,7 @@ class Car(db.Model):
     year = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
 
-    def __repr__(self):# This makes it into a string reperesentation
-        return f'<Car {self.make} {self.model}>'
+
 
     def __init__(self,id: int, make: str, model: str, year: int, price: float):
         self.id = id
@@ -19,6 +18,14 @@ class Car(db.Model):
         self.year = year
         self.price = price
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'make': self.make,
+            'model': self.model,
+            'year': self.year,
+            'price': self.price
+        }
     def add_to_database(self):
         db.session.add(self)
         db.session.commit()

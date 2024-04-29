@@ -1,0 +1,16 @@
+[
+    {
+        "id": 128,
+        "make": "Toyota",
+        "model": "Supra",
+        "year": 1995,
+        "price": 80000.0
+    },
+    {
+        "id": 3472,
+        "make": "Mercedes",
+        "model": "C63 AMG",
+        "year": 2021,
+        "price": 70000.0
+    }
+]

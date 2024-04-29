@@ -3,7 +3,7 @@ from flask_restx import Namespace, Resource, fields
 from random import randint
 from ..database import db
 from src.model.car import Car
-
+import json
 car_ns = Namespace('car', description='car related operations')
 
 car_model = car_ns.model('Car model',{
@@ -35,10 +35,13 @@ class ListCars(Resource):
                       year=car_ns.payload['year'],
                       price=car_ns.payload['price'])
 
-        db.session.add(new_car)
-        db.session.commit()
+        Car.add_to_database(new_car)
         return new_car
 
     @car_ns.marshal_with(car_model)
     def get(self):
-        return Car.query.all()
+        cars = Car.get_all_cars()#Get all the cars
+        cars_json = [car.to_dict() for car in cars]  # Serialize each car object
+        with open('src/temps/data.json','w') as f:# Write the data to the file
+            f.write(json.dumps(cars_json,indent = 4))# Indent is for the spaces in the file
+        return cars_json
