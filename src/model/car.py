@@ -1,7 +1,7 @@
 from ..app import db
 
 class Car(db.Model):
-    __tablename__ = 'cars'
+    __tablename__ = 'cars' #We create the tabel this way
 
     id = db.Column(db.Integer, primary_key=True)
     make = db.Column(db.String(30), nullable=False)
@@ -18,7 +18,7 @@ class Car(db.Model):
         self.year = year
         self.price = price
 
-    def to_dict(self):
+    def to_dict(self):# Takes the database data and makes it into a json
         return {
             'id': self.id,
             'make': self.make,
@@ -26,10 +26,10 @@ class Car(db.Model):
             'year': self.year,
             'price': self.price
         }
-    def add_to_database(self):
+    def add_to_database(self):#We add the data to the databse
         db.session.add(self)
         db.session.commit()
 
     @staticmethod
-    def get_all_cars():
+    def get_all_cars():# We get all the cars in the database
         return Car.query.all()

@@ -41,7 +41,7 @@ class ListCars(Resource):
     @car_ns.marshal_with(car_model)
     def get(self):
         cars = Car.get_all_cars()#Get all the cars
-        cars_json = [car.to_dict() for car in cars]  # Serialize each car object
+        cars_json = [car.to_dict() for car in cars]  # We get each car and make the responce into a json
         with open('src/temps/data.json','w') as f:# Write the data to the file
             f.write(json.dumps(cars_json,indent = 4))# Indent is for the spaces in the file
         return cars_json
