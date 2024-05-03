@@ -7,10 +7,24 @@
         "price": 80000.0
     },
     {
+        "id": 324,
+        "make": "Mercedes",
+        "model": "s63 amg",
+        "year": 2024,
+        "price": 200000.0
+    },
+    {
         "id": 3472,
         "make": "Mercedes",
         "model": "C63 AMG",
         "year": 2021,
         "price": 70000.0
+    },
+    {
+        "id": 5735,
+        "make": "Honda",
+        "model": "Civic",
+        "year": 2009,
+        "price": 10000.0
     }
 ]
