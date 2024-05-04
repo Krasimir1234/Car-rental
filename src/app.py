@@ -16,5 +16,9 @@ def create_app():
     api.add_namespace(car_ns)
     @app.route('/admin')
     def index():
-        return render_template('home.html')
+        return render_template('admin.html')
+
+    @app.route('/home')
+    def index2():
+        return render_template('Home.html')
     return app

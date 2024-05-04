@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vehicle Rental Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff8dc;
+            padding: 20px;
+        }
+        .container {
+            width: 300px;
+            margin: auto;
+            background-color: #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        select, input[type="text"], input[type="time"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="button"] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Vehicle Rental Form</h2>
+        <label for="vehicle-type">Vehicle Type</label>
+        <select id="vehicle-type">
+            <option value="car">Cars</option>
+            <option value="electro">Electromobiles</option>
+            <option value="goods">Goods Vehicles</option>
+        </select>
+
+        <label for="rental-location">Rental Location</label>
+        <select id="rental-location">
+            <option value="select">Select a location</option>
+            <option value="location1">Location 1</option>
+            <option value="location2">Location 2</option>
+        </select>
+
+        <label for="start-date">Start Date and Time</label>
+        <input type="text" id="start-date" placeholder="Select Date">
+        <input type="time" id="start-time">
+
+        <label for="return-location">Return Location</label>
+        <select id="return-location">
+            <option value="same">Same as rental location</option>
+            <option value="location1">Location 1</option>
+            <option value="location2">Location 2</option>
+        </select>
+
+        <label for="end-date">End Date and Time</label>
+        <input type="text" id="end-date" placeholder="Select Date">
+        <input type="time" id="end-time">
+
+        <input type="button" value="Search Now">
+    </div>
+</body>
+</html>
