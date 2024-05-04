@@ -51,136 +51,85 @@
 
     <h1>Make a new car</h1>
     <div class="input-form">
-    <h2 class="form-title">Enter Car Details</h2>
-    <input type="text" id="car-id" placeholder="Car ID">
-    <input type="text" id="car-make" placeholder="Car Make">
-    <input type="text" id="car-model" placeholder="Car Model">
-    <input type="text" id="car-year" placeholder="Car Year">
-    <input type="text" id="car-price" placeholder="Car Price">
-    <button onclick="submitCarDetails()">Submit Car Details</button>
-</div>
+        <h2 class="form-title">Enter Car Details</h2>
+        <input type="text" id="car-id" placeholder="Car ID">
+        <input type="text" id="car-make" placeholder="Car Make">
+        <input type="text" id="car-model" placeholder="Car Model">
+        <input type="text" id="car-year" placeholder="Car Year">
+        <input type="text" id="car-price" placeholder="Car Price">
+        <input type="text" id="car-status" placeholder="Status">
+        <input type="text" id="car-location" placeholder="Location">
+        <button onclick="submitCarDetails()">Submit Car Details</button>
+    </div>
+<script>
+document.getElementById('fetch-car-btn').addEventListener('click', function() {
+    const inputId = document.getElementById('car-id-input').value.trim();
+    if (!inputId) {
+        alert('Please enter a car ID');
+        return;
+    }
 
-<div id="car-container"></div>
-
-  <script>
-    document.getElementById('fetch-car-btn').addEventListener('click', function() {
-        const inputId = document.getElementById('car-id-input').value.trim();
-        if (!inputId) {
-            alert('Please enter a car ID');
-            return;
-        }
-
-        fetch('/static/data.json')
-        .then(response => response.json())
-        .then(data => {
-            const carContainer = document.getElementById('car-container');
-            // Clear previous contents
-            carContainer.innerHTML = '';
-
-            // Find the car by ID
-            const car = data.find(car => car.id.toString() === inputId);
-            if (!car) {
-                carContainer.innerHTML = '<p>No car found with ID: ' + inputId + '</p>';
-                return;
+    fetch(`/car/${inputId}`)  // Fetching car details by ID
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('Car not found');
             }
-
-            const carCard = document.createElement('div');
-            carCard.classList.add('car-card');
-            const carName = document.createElement('h2');
-            carName.classList.add('car-name');
-            carName.textContent = car.name;
-
-            const carDetails = document.createElement('div');
-            carDetails.classList.add('car-details');
-            carDetails.innerHTML = `
-                <p><strong>ID:</strong> ${car.id}</p>
-                <p><strong>Make:</strong> ${car.make}</p>
-                <p><strong>Model:</strong> ${car.model}</p>
-                <p><strong>Year:</strong> ${car.year}</p>
-                <p><strong>Price:</strong> ${car.price}</p>
-            `;
-            carCard.appendChild(carName);
-            carCard.appendChild(carDetails);
-            carContainer.appendChild(carCard);
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-            carContainer.innerHTML = '<p>Error loading car details.</p>';
-        });
-    });
-
-    // Function to handle car details submission
-    function submitCarDetails() {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(car => {
         const carContainer = document.getElementById('car-container');
-        carContainer.innerHTML = ''; // Clear previous content
+        carContainer.innerHTML = ''; // Clear previous contents
 
-        const carDetails = {
-            id: document.getElementById('car-id').value,
-            make: document.getElementById('car-make').value,
-            model: document.getElementById('car-model').value,
-            year: document.getElementById('car-year').value,
-            price: document.getElementById('car-price').value
-        };
-
+        // Build the car details card
         const carCard = document.createElement('div');
         carCard.classList.add('car-card');
-        carCard.innerHTML = `
-            <h2 class="car-name">${carDetails.make} ${carDetails.model}</h2>
-            <div class="car-details">
-                <p><strong>ID:</strong> ${carDetails.id}</p>
-                <p><strong>Make:</strong> ${carDetails.make}</p>
-                <p><strong>Model:</strong> ${carDetails.model}</p>
-                <p><strong>Year:</strong> ${carDetails.year}</p>
-                <p><strong>Price:</strong> ${carDetails.price}</p>
-            </div>
-        `;
-        carContainer.appendChild(carCard);
-    }
-</script>
-<script>
-    function submitCarDetails() {
-        const carDetails = {
-            id: document.getElementById('car-id').value,
-            make: document.getElementById('car-make').value,
-            model: document.getElementById('car-model').value,
-            year: parseInt(document.getElementById('car-year').value),
-            price: parseFloat(document.getElementById('car-price').value)
-        };
+        const carName = document.createElement('h2');
+        carName.classList.add('car-name');
+        carName.textContent = car.make + " " + car.model;
 
-        // Send the car details to the server
-        fetch('/car/', {  // Adjust the URL based on your Flask app's configuration
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(carDetails)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Success:', data);
-            alert('Car added successfully!');
-            // Optionally, clear the form fields or handle further
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('Failed to add the car. Please try again.');
-        });
-    }
-</script>
-    <script>
+        const carDetails = document.createElement('div');
+        carDetails.classList.add('car-details');
+        carDetails.innerHTML = `
+            <p><strong>ID:</strong> ${car.id}</p>
+            <p><strong>Make:</strong> ${car.make}</p>
+            <p><strong>Model:</strong> ${car.model}</p>
+            <p><strong>Year:</strong> ${car.year}</p>
+            <p><strong>Price:</strong> ${car.price}</p>
+            <p><strong>Status:</strong> ${car.status}</p>
+            <p><strong>Location:</strong> ${car.location}</p>
+        `;
+        carCard.appendChild(carName);
+        carCard.appendChild(carDetails);
+        carContainer.appendChild(carCard);
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+        const carContainer = document.getElementById('car-container');
+        carContainer.innerHTML = `<p>${error.message}</p>`; // Show error message in the UI
+    });
+});
+
+
+
 function submitCarDetails() {
     const carDetails = {
-        id: parseInt(document.getElementById('car-id').value, 10), // Convert ID to integer if necessary
+        id: parseInt(document.getElementById('car-id').value, 10), // Ensure there is an input field for car ID in the HTML
         make: document.getElementById('car-make').value,
         model: document.getElementById('car-model').value,
         year: parseInt(document.getElementById('car-year').value, 10),
-        price: parseFloat(document.getElementById('car-price').value)
+        price: parseFloat(document.getElementById('car-price').value),
+        status: document.getElementById('car-status').value,
+        location: document.getElementById('car-location').value
     };
+
+    // Checking if the ID is a valid number
+    if (isNaN(carDetails.id)) {
+        alert('Please enter a valid ID');
+        return;
+    }
 
     fetch('/car/', {
         method: 'POST',
@@ -191,23 +140,26 @@ function submitCarDetails() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Network response was not ok: ' + response.statusText);
+            throw new Error('Network response was not ok. Status: ' + response.status);
         }
         return response.json();
     })
     .then(data => {
-        console.log('Success:', data);
-        alert('Car added successfully!');
-        // Optionally, clear the form fields or handle further
+        if (data.errors) {
+            alert('Error: ' + JSON.stringify(data.errors));
+        } else {
+            console.log('Success:', data);
+            alert('Car added successfully!');
+        }
     })
-    .catch(error => {
+    .catch((error) => {
         console.error('Error:', error);
-        alert('Failed to add the car. Please try again.');
+        alert('Failed to add the car. Please check your input and try again.');
     });
 }
-</script>
 
-</body>
+
+</script>
 
 </body>
 </html>

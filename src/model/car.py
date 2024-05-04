@@ -8,15 +8,19 @@ class Car(db.Model):
     model = db.Column(db.String(30), nullable=False)
     year = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(30), nullable=False)
+    location = db.Column(db.String(30), nullable=False)
 
 
 
-    def __init__(self,id: int, make: str, model: str, year: int, price: float):
+    def __init__(self,id: int, make: str, model: str, year: int, price: float,status:str ,location: str):
         self.id = id
         self.make = make
         self.model = model
         self.year = year
         self.price = price
+        self.status = status
+        self.location = location
 
     def to_dict(self):# Takes the database data and makes it into a json
         return {
@@ -24,7 +28,9 @@ class Car(db.Model):
             'make': self.make,
             'model': self.model,
             'year': self.year,
-            'price': self.price
+            'price': self.price,
+            'status': self.status,
+            'location': self.location
         }
     def add_to_database(self):#We add the data to the databse
         db.session.add(self)

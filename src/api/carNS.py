@@ -16,7 +16,11 @@ car_model = car_ns.model('Car model',{
     'year': fields.Integer(required=True,
                            help= 'The year of the car'),
     'price': fields.Float(required=True,
-                          help= 'The price of the car')
+                          help= 'The price of the car'),
+    'status' : fields.String(required=True,
+                             help='Is the car rented'),
+    'location': fields.String(required=True,
+                              help= 'The location of the car')
 })
 
 
@@ -33,7 +37,9 @@ class ListCars(Resource):
                       make=car_ns.payload['make'],
                       model=car_ns.payload['model'],
                       year=car_ns.payload['year'],
-                      price=car_ns.payload['price'])
+                      price=car_ns.payload['price'],
+                      status=car_ns.payload['status'],
+                      location=car_ns.payload['location'])
 
         Car.add_to_database(new_car)
         return new_car
@@ -45,3 +51,13 @@ class ListCars(Resource):
         with open('src/static/data.json','w') as f:# Write the data to the file
             f.write(json.dumps(cars_json,indent = 4))# Indent is for the spaces in the file
         return cars_json
+
+@car_ns.route('/<int:car_id>')
+class CarResource(Resource):
+    @car_ns.response(200, 'Success', car_model)
+    @car_ns.response(404, 'Car not found')
+    def get(self, car_id):
+        car = Car.query.get(car_id)
+        if not car:
+            car_ns.abort(404, 'Car not found')
+        return car.to_dict()
