@@ -3,17 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Home.css') }}">
     <title>Vehicle Rental Form</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #fff8dc; padding: 20px; }
-        .container { background-color: #ffc107; padding: 20px; border-radius: 8px; width: fit-content; margin: auto; margin-bottom: 30px; }
-        select, input[type="submit"] { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        input[type="submit"] { background-color: #4CAF50; color: white; }
-        input[type="submit"]:hover { background-color: #45a049; }
-        .car-card { background-color: #e0e0e0; box-shadow: 0 2px 5px rgba(0,0,0,0.15); padding: 10px; border-radius: 5px; margin-bottom: 10px; }
-        .car-title { color: #333; font-size: 18px; margin-bottom: 5px; }
-        .car-detail { font-size: 14px; color: #666; }
-    </style>
 </head>
 <body>
     <div class="container">
