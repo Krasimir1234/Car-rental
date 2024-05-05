@@ -1,6 +1,8 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from ..model.car import Car, db
+from datetime import datetime
+from ..model.Reservation import Reservation
 
 car_ns = Namespace('car', description='Car related operations')
 
@@ -19,14 +21,24 @@ class ListCars(Resource):
     @car_ns.doc('list_cars')
     @car_ns.marshal_with(car_model, as_list=True)
     def get(self):
-        """List all cars or filter cars by location."""
+        """List all cars or filter cars by location and availability."""
         location = request.args.get('location')
-        if location:
-            cars = Car.query.filter(Car.location == location, Car.status != 'NO').all()
-        else:
-            cars = Car.query.filter(Car.status != 'NO').all()
-        return cars
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
 
+        query = Car.query.filter(Car.status != 'NO')
+        if location:
+            query = query.filter(Car.location == location)
+
+        if start_date and end_date:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+            query = query.filter(~Car.reservations.any(
+                (Reservation.start_date <= end_date) & (Reservation.end_date >= start_date)
+            ))
+
+        cars = query.all()
+        return cars
     @car_ns.doc('add_car')
     @car_ns.expect(car_model, validate=True)
     @car_ns.marshal_with(car_model, code=201)
@@ -47,3 +59,30 @@ class CarResource(Resource):
         """Fetch a car given its identifier."""
         car = Car.query.get_or_404(id)# if it doesnt exist it trows a 404
         return car
+
+
+@car_ns.route('/reserve/<int:id>', methods=['POST'])
+class ReserveCar(Resource):
+    @car_ns.doc('reserve_car')
+    @car_ns.expect(car_ns.model('Reservation', {
+        'start_date': fields.Date(required=True),
+        'end_date': fields.Date(required=True)
+    }))
+    def post(self, id):
+        try:
+            data = request.get_json()
+            start_date = datetime.strptime(data['start_date'], '%Y-%m-%d').date()
+            end_date = datetime.strptime(data['end_date'], '%Y-%m-%d').date()
+            # Check if car is available for these dates before making a reservation
+            if Car.query.filter(Car.id == id).join(Reservation).filter(
+                (Reservation.start_date <= end_date) &
+                (Reservation.end_date >= start_date)).count() == 0:
+                reservation = Reservation(car_id=id, start_date=start_date, end_date=end_date)
+                db.session.add(reservation)
+                db.session.commit()
+                return {"message": "Reservation successful"}, 201
+            else:
+                return {"message": "Car not available for the selected dates"}, 400
+        except Exception as e:
+            db.session.rollback()
+            return {"message": str(e)}, 500

@@ -16,6 +16,14 @@
                 <option value="Sofia" {{ 'selected' if location == 'Sofia' else '' }}>Sofia</option>
                 <option value="Vienna" {{ 'selected' if location == 'Vienna' else '' }}>Vienna</option>
             </select>
+
+            <!-- Date selectors -->
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" name="start_date" required>
+
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" name="end_date" required>
+
             <input type="submit" value="Search Now">
         </form>
     </div>
@@ -27,10 +35,77 @@
             <div class="car-detail">Price: {{ car.price }} per day</div>
             <div class="car-detail">Status: {{ car.status }}</div>
             <div class="car-detail">Location: {{ car.location }}</div>
+            <input onclick="reserveCar({{ car.id }})" type="button" class="res-but" value="Reserve car">
         </div>
         {% else %}
         <p>No cars found for this location.</p>
         {% endfor %}
     </div>
+<script>
+document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevents the form from submitting traditionally
+
+    const location = document.getElementById('rental-location').value;
+    const startDate = document.getElementById('start-date').value;
+    const endDate = document.getElementById('end-date').value;
+
+    fetch(`/api/cars?location=${location}&start_date=${startDate}&end_date=${endDate}`)
+        .then(response => response.json())
+        .then(cars => {
+            const container = document.getElementById('vehicles-container');
+            container.innerHTML = ''; // Clear previous results
+            if (cars.length > 0) {
+                cars.forEach(car => {
+                    const carCard = `<div class="car-card">
+                        <div class="car-title">${car.make} ${car.model}</div>
+                        <div class="car-detail">Year: ${car.year}</div>
+                        <div class="car-detail">Price: ${car.price} per day</div>
+                        <div class="car-detail">Status: ${car.status}</div>
+                        <div class="car-detail">Location: ${car.location}</div>
+                        <div><input onclick="reserveCar(${car.id})" type="button" value="Reserve car"></div>
+                    </div>`;
+                    container.innerHTML += carCard;
+                });
+            } else {
+                container.innerHTML = '<p>No cars found for this location.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching cars:', error);
+            alert('Failed to fetch cars.');
+        });
+});
+
+function reserveCar(carId) {
+    const startDate = document.getElementById('start-date').value;
+    const endDate = document.getElementById('end-date').value;
+
+    fetch(`/api/cars/reserve/${carId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ start_date: startDate, end_date: endDate })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to reserve the car: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert(data.message);
+        // Optionally refresh the car listing after reservation
+        document.querySelector('form').submit();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert(error.message);
+    });
+}
+
+</script>
+
+
 </body>
 </html>

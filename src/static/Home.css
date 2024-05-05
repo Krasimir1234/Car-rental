@@ -42,3 +42,17 @@ input[type="submit"]:hover {
     font-size: 14px;
     color: #666;
 }
+.res-but {
+    background-color: #007BFF; /* Blue background */
+    color: white;            /* White text */
+    padding: 10px 20px;      /* Padding around the text */
+    border: none;            /* No border */
+    border-radius: 5px;      /* Rounded corners */
+    cursor: pointer;         /* Pointer cursor on hover */
+    font-size: 16px;         /* Text size */
+    outline: none;           /* Removes the outline */
+}
+
+.res-but:hover {
+    background-color: #0056b3; /* Slightly darker blue on hover */
+}

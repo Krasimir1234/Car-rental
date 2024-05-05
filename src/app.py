@@ -23,4 +23,8 @@ def create_app():
         location = request.args.get('location')
         cars = Car.query.filter(Car.location == location, Car.status != 'NO').all() if location else []
         return render_template('Home.html', cars=cars, location=location)
+
+    @app.route('/home/reserve')
+    def index3():
+        return render_template('reserve.html')
     return app

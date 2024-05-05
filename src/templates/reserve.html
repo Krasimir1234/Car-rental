@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='reservation.css') }}">
+    <title>Make a Reservation</title>
+</head>
+<body>
+    <form action="/submit-reservation" method="post">
+        <label for="car-id">Select Car:</label>
+        <select id="car-id" name="car_id">
+            <!-- Dynamically filled with cars -->
+        </select>
+
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date" name="start_date" required>
+
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date" name="end_date" required>
+
+        <input type="submit" value="Reserve">
+    </form>
+</body>
+</html>
