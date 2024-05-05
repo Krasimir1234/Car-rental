@@ -22,9 +22,9 @@ class ListCars(Resource):
         """List all cars or filter cars by location."""
         location = request.args.get('location')
         if location:
-            cars = Car.query.filter_by(location=location).all()
+            cars = Car.query.filter(Car.location == location, Car.status != 'NO').all()
         else:
-            cars = Car.query.all()
+            cars = Car.query.filter(Car.status != 'NO').all()
         return cars
 
     @car_ns.doc('add_car')
@@ -34,8 +34,7 @@ class ListCars(Resource):
         """Add a new car."""
         data = car_ns.payload
         new_car = Car(**data)
-        db.session.add(new_car)
-        db.session.commit()
+        new_car.add_to_database()
         return new_car, 201
 
 @car_ns.route('/<int:id>')

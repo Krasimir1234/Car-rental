@@ -1,7 +1,8 @@
-from flask import Flask,render_template
+from flask import Flask,render_template,request
 from flask_restx import Api
 from .database import db
 from .api.carNS import car_ns
+from .model.car import Car
 def create_app():
     app = Flask(__name__)
     # Connecting and making the database with flask-sqlalchemy
@@ -19,5 +20,7 @@ def create_app():
 
     @app.route('/home')
     def index2():
-        return render_template('Home.html')
+        location = request.args.get('location')
+        cars = Car.query.filter(Car.location == location, Car.status != 'NO').all() if location else []
+        return render_template('Home.html', cars=cars, location=location)
     return app
