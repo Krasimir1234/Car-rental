@@ -25,6 +25,7 @@ class ListCars(Resource):
         location = request.args.get('location')
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
+        price = request.args.get('price')
 
         query = Car.query.filter(Car.status != 'NO')
         if location:
@@ -36,6 +37,9 @@ class ListCars(Resource):
             query = query.filter(~Car.reservations.any(
                 (Reservation.start_date <= end_date) & (Reservation.end_date >= start_date)
             ))
+
+        if price:
+            query = query.filter(Car.price <= float(price))
 
         cars = query.all()
         return cars
