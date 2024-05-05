@@ -12,7 +12,6 @@ class Car(db.Model):
     location = db.Column(db.String(30), nullable=False)
 
 
-
     def __init__(self,id: int, make: str, model: str, year: int, price: float,status:str ,location: str):
         self.id = id
         self.make = make
