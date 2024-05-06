@@ -9,18 +9,27 @@
 <body>
     <div class="container">
         <h2>Vehicle Rental Form</h2>
-        <form method="get">
+        <form>
             <label for="rental-location">Rental Location</label>
             <select id="rental-location" name="location">
                 <option value="">Select a location</option>
-                <option value="Sofia" {{ 'selected' if location == 'Sofia' else '' }}>Sofia</option>
-                <option value="Vienna" {{ 'selected' if location == 'Vienna' else '' }}>Vienna</option>
+                <option value="Sofia">Sofia</option>
+                <option value="Vienna">Vienna</option>
             </select>
+            <label for="gearbox">Gearbox</label>
             <select id="gearbox" name="gearbox">
-                <label for="gearbox">Gearbox</label>
-                <option value="Manual" {{ 'selected' if gearbox == 'Manual' else '' }}>Manual</option>
-                <option value="Automatic" {{ 'selected' if gearbox == 'Automatic' else '' }}>Automatic</option>
-                </select>
+                <option value="Manual">Manual</option>
+                <option value="Automatic">Automatic</option>
+            </select>
+
+            <label for="carType">Choose a car type:</label>
+            <select id="carType" name="carType">
+                <option value="hatchback">Hatchback</option>
+                <option value="coupe">Coupe</option>
+                <option value="sedan">Sedan</option>
+                <option value="suv">SUV</option>
+                <option value="kombi">Kombi</option>
+            </select>
 
             <label for="start-date">Start Date:</label>
             <input type="date" id="start-date" name="start_date" required>
@@ -28,46 +37,30 @@
             <label for="end-date">End Date:</label>
             <input type="date" id="end-date" name="end_date" required>
 
-            <!-- Added price input -->
             <label for="max-price">Maximum Price Per Day:</label>
             <input type="number" id="max-price" name="price" placeholder="Enter max price" min="0" step="0.01">
-
-             <label for="type">Type of the car:</label>
-            <input type="text" id="type" name="type" placeholder="Enter max type">
 
             <input type="submit" value="Search Now">
         </form>
     </div>
     <div id="vehicles-container">
-        {% for car in cars %}
-        <div class="car-card">
-            <div class="car-title">{{ car.make }} {{ car.model }}</div>
-            <div class="car-detail">Year: {{ car.year }}</div>
-            <div class="car-detail">Price: {{ car.price }} per day</div>
-            <div class="car-detail">Status: {{ car.status }}</div>
-            <div class="car-detail">Location: {{ car.location }}</div>
-            <input onclick="reserveCar({{ car.id }})" type="button" class="res-but" value="Reserve car">
-        </div>
-        {% else %}
-        <p>No cars found for this location.</p>
-        {% endfor %}
     </div>
 <script>
 document.querySelector('form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevents the form from submitting traditionally
+    event.preventDefault();
 
     const location = document.getElementById('rental-location').value;
     const startDate = document.getElementById('start-date').value;
     const endDate = document.getElementById('end-date').value;
-    const Price = document.getElementById('max-price').value; // Retrieve the max price from the input field
-    const Type = document.getElementById('type').value;// Retrieve the max price from the input field
-    const Gearbox = document.getElementById('gearbox').value;// Retrieve the max price from the input field
+    const price = document.getElementById('max-price').value;
+    const carType = document.getElementById('carType').value;
+    const gearbox = document.getElementById('gearbox').value;
 
-    fetch(`/api/cars?location=${location}&start_date=${startDate}&end_date=${endDate}&price=${Price}&type=${Type}&gearbox=${Gearbox}`)
+    fetch(`/api/cars?location=${location}&start_date=${startDate}&end_date=${endDate}&price=${price}&type=${carType}&gearbox=${gearbox}`)
         .then(response => response.json())
         .then(cars => {
             const container = document.getElementById('vehicles-container');
-            container.innerHTML = ''; // Clear previous results
+            container.innerHTML = '';
             if (cars.length > 0) {
                 cars.forEach(car => {
                     const carCard = `<div class="car-card">
@@ -91,7 +84,6 @@ document.querySelector('form').addEventListener('submit', function(event) {
             alert('Failed to fetch cars.');
         });
 });
-
 function reserveCar(carId) {
     const startDate = document.getElementById('start-date').value;
     const endDate = document.getElementById('end-date').value;
@@ -111,7 +103,6 @@ function reserveCar(carId) {
     })
     .then(data => {
         alert(data.message);
-        // Optionally refresh the car listing after reservation
         document.querySelector('form').submit();
     })
     .catch(error => {
@@ -119,7 +110,6 @@ function reserveCar(carId) {
         alert(error.message);
     });
 }
-
 </script>
 </body>
 </html>
