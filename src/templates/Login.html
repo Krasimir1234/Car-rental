@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Login.css') }}">
+</head>
+<body>
+    <div class="login-form">
+        <h2>Login</h2>
+        <form id="login-form" action="/auth/login" method="post">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div>
+                <input type="submit" value="Login">
+            </div>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script >
+   document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('login-form');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Construct the request payload
+        const data = { username, password };
+
+        // Perform the fetch request
+        fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Success:', data);
+            message.textContent = "Login successful!";
+
+            // Store username in localStorage
+            localStorage.setItem('username', data.username);
+
+            // Redirect after successful login
+            window.location.href = '/home';
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            message.textContent = "Invalid username or password";
+        });
+    });
+});
+
+
+    </script>
+</body>
+</html>

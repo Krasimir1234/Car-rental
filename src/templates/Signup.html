@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+    <title>Sign Up</title>
+</head>
+<body>
+    <div class="login-form">
+        <h2>Sign Up</h2>
+        <form action="auth/signup" method="post"> <!-- Corrected action attribute -->
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required> <!-- Changed input type to password -->
+            </div>
+            <div>
+                <input type="submit" value="Sign Up">
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.login-form form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value; // Get password value
+            if (!username || !password) { // Check both username and password
+                alert('Username and password are required'); // Updated alert message
+                return;
+            }
+
+            // Construct the request payload
+            const data = { username, password }; // Include password in payload
+
+            // Perform the fetch request
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                alert('Sign up successful!');
+                // Redirect after sign up or update the page state
+                // window.location.href = '/dashboard'; // Redirect to a new page
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Error signing up. Please try again.');
+            });
+        });
+    });
+</script>
+</html>

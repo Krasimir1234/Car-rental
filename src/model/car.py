@@ -1,7 +1,7 @@
 from ..app import db
 
 class Car(db.Model):
-    __tablename__ = 'cars' #We create the tabel this way
+    __tablename__ = 'cars'
 
     id = db.Column(db.Integer, primary_key=True)
     make = db.Column(db.String(30), nullable=False)
@@ -12,7 +12,8 @@ class Car(db.Model):
     location = db.Column(db.String(30), nullable=False)
     type = db.Column(db.String(50), nullable=True)
     gearbox = db.Column(db.String(30), nullable=True)
-
+    owner_username = db.Column(db.String(20), db.ForeignKey('sign_up.username'))
+    owner = db.relationship('Reservation', backref='carr', lazy=True, overlaps="carr,owner")
 
     def __init__(self,id: int, make: str, model: str, year: int, price: float,status:str ,location: str, type : str, gearbox: str):
         self.id = id

@@ -3,6 +3,9 @@ from flask_restx import Namespace, Resource, fields
 from ..model.car import Car, db
 from datetime import datetime
 from ..model.Reservation import Reservation
+import logging
+from flask import session
+logger = logging.getLogger(__name__)
 
 car_ns = Namespace('car', description='Car related operations')
 
@@ -87,16 +90,22 @@ class ReserveCar(Resource):
             data = request.get_json()
             start_date = datetime.strptime(data['start_date'], '%Y-%m-%d').date()
             end_date = datetime.strptime(data['end_date'], '%Y-%m-%d').date()
+            username = session.get('username')  # Retrieve username from session
+
+            if not username:
+                return {"message": "User not authenticated"}, 401
+
             # Check if car is available for these dates before making a reservation
             if Car.query.filter(Car.id == id).join(Reservation).filter(
                 (Reservation.start_date <= end_date) &
                 (Reservation.end_date >= start_date)).count() == 0:
-                reservation = Reservation(car_id=id, start_date=start_date, end_date=end_date)
+                reservation = Reservation(car_id=id, start_date=start_date, end_date=end_date, username=username)
                 db.session.add(reservation)
                 db.session.commit()
                 return {"message": "Reservation successful"}, 201
             else:
                 return {"message": "Car not available for the selected dates"}, 400
         except Exception as e:
+            logger.exception("Error while making reservation")
             db.session.rollback()
-            return {"message": str(e)}, 500
+            return {"message": "An error occurred while making the reservation"}, 500
