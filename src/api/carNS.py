@@ -13,7 +13,9 @@ car_model = car_ns.model('Car', {
     'year': fields.Integer(required=True, description='The year of the car'),
     'price': fields.Float(required=True, description='The price of the car'),
     'status': fields.String(required=True, description='Rental status of the car'),
-    'location': fields.String(required=True, description='The location of the car')
+    'location': fields.String(required=True, description='The location of the car'),
+    'type': fields.String(required=True, description='The type of the car'),
+    'gearbox': fields.String(required=True, description='The gearbox of the')
 })
 
 @car_ns.route('/')
@@ -26,6 +28,8 @@ class ListCars(Resource):
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
         price = request.args.get('price')
+        type = request.args.get('type')
+        gearbox = request.args.get('gearbox')
 
         query = Car.query.filter(Car.status != 'NO')
         if location:
@@ -40,6 +44,12 @@ class ListCars(Resource):
 
         if price:
             query = query.filter(Car.price <= float(price))
+
+        if type:
+            query = query.filter(Car.type == type)
+
+        if gearbox:
+            query = query.filter(Car.gearbox == gearbox)
 
         cars = query.all()
         return cars

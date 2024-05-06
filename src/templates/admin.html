@@ -22,6 +22,8 @@
         <input type="text" id="car-price" placeholder="Car Price">
         <input type="text" id="car-status" placeholder="Status">
         <input type="text" id="car-location" placeholder="Location">
+        <input type="text" id="car-type" placeholder="Type">
+        <input type="text" id="car-gearbox" placeholder="Gearbox">
         <button onclick="submitCarDetails()">Submit Car Details</button>
     </div>
 
@@ -65,6 +67,8 @@ document.getElementById('fetch-car-btn').addEventListener('click', function() {
             <p><strong>Price:</strong> ${car.price}</p>
             <p><strong>Status:</strong> ${car.status}</p>
             <p><strong>Location:</strong> ${car.location}</p>
+            <p><strong>Type:</strong> ${car.type}</p>
+            <p><strong>Gearbox:</strong> ${car.gearbox}</p>
         `;
         carCard.appendChild(carName);
         carCard.appendChild(carDetails);
@@ -87,7 +91,9 @@ function submitCarDetails() {
         year: parseInt(document.getElementById('car-year').value, 10),
         price: parseFloat(document.getElementById('car-price').value),
         status: document.getElementById('car-status').value,
-        location: document.getElementById('car-location').value
+        location: document.getElementById('car-location').value,
+        type: document.getElementById('car-type').value,
+        gearbox: document.getElementById('car-gearbox').value
     };
 
     // Checking if the ID is a valid number

@@ -16,6 +16,11 @@
                 <option value="Sofia" {{ 'selected' if location == 'Sofia' else '' }}>Sofia</option>
                 <option value="Vienna" {{ 'selected' if location == 'Vienna' else '' }}>Vienna</option>
             </select>
+            <select id="gearbox" name="gearbox">
+                <label for="gearbox">Gearbox</label>
+                <option value="Manual" {{ 'selected' if gearbox == 'Manual' else '' }}>Manual</option>
+                <option value="Automatic" {{ 'selected' if gearbox == 'Automatic' else '' }}>Automatic</option>
+                </select>
 
             <label for="start-date">Start Date:</label>
             <input type="date" id="start-date" name="start_date" required>
@@ -26,6 +31,9 @@
             <!-- Added price input -->
             <label for="max-price">Maximum Price Per Day:</label>
             <input type="number" id="max-price" name="price" placeholder="Enter max price" min="0" step="0.01">
+
+             <label for="type">Type of the car:</label>
+            <input type="text" id="type" name="type" placeholder="Enter max type">
 
             <input type="submit" value="Search Now">
         </form>
@@ -52,8 +60,10 @@ document.querySelector('form').addEventListener('submit', function(event) {
     const startDate = document.getElementById('start-date').value;
     const endDate = document.getElementById('end-date').value;
     const Price = document.getElementById('max-price').value; // Retrieve the max price from the input field
+    const Type = document.getElementById('type').value;// Retrieve the max price from the input field
+    const Gearbox = document.getElementById('gearbox').value;// Retrieve the max price from the input field
 
-    fetch(`/api/cars?location=${location}&start_date=${startDate}&end_date=${endDate}&price=${Price}`)
+    fetch(`/api/cars?location=${location}&start_date=${startDate}&end_date=${endDate}&price=${Price}&type=${Type}&gearbox=${Gearbox}`)
         .then(response => response.json())
         .then(cars => {
             const container = document.getElementById('vehicles-container');
@@ -66,6 +76,8 @@ document.querySelector('form').addEventListener('submit', function(event) {
                         <div class="car-detail">Price: ${car.price} per day</div>
                         <div class="car-detail">Status: ${car.status}</div>
                         <div class="car-detail">Location: ${car.location}</div>
+                        <div class="car-detail">Type: ${car.type}</div>
+                        <div class="car-detail">Gearbox: ${car.gearbox}</div>
                         <div><input onclick="reserveCar(${car.id})" type="button" class="res-but" value="Reserve car"></div>
                     </div>`;
                     container.innerHTML += carCard;
