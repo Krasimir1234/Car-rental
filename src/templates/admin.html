@@ -12,6 +12,13 @@
     <button id="fetch-car-btn">Get car by id</button>
     <div id="car-container"></div>
 
+    <h1>Update Car Status</h1>
+    <div>
+        <input type="text" id="status-id-input" placeholder="Enter Car ID for status update">
+        <input type="text" id="new-status" placeholder="Enter New Status">
+        <button id="update-status-btn">Update Status</button>
+    </div>
+
     <h1>Make a new car</h1>
     <div class="input-form">
         <h2 class="form-title">Enter Car Details</h2>
@@ -126,6 +133,37 @@ function submitCarDetails() {
     .catch((error) => {
         console.error('Error:', error);
         alert('Failed to add the car. Please check your input and try again.');
+    });
+}
+
+document.getElementById('update-status-btn').addEventListener('click', function() {
+    const carId = document.getElementById('status-id-input').value.trim();
+    const newStatus = document.getElementById('new-status').value.trim();
+    updateCarStatus(carId, newStatus);
+});
+
+function updateCarStatus(carId, newStatus) {
+    if (!carId || !newStatus) {
+        alert('Please fill both fields to update the status');
+        return;
+    }
+    fetch(`/api/cars/${carId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Status updated successfully!');
+            fetchCarDetails(carId);  // Optionally refresh the displayed car details
+        } else {
+            alert('Failed to update status: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error updating status:', error);
+        alert('Failed to update status. Please try again.');
     });
 }
 

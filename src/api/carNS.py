@@ -1,5 +1,5 @@
 from flask import request
-from flask_restx import Namespace, Resource, fields
+from flask_restx import Namespace, Resource, fields ,abort
 from ..model.car import Car, db
 from datetime import datetime
 from ..model.Reservation import Reservation
@@ -76,6 +76,23 @@ class CarResource(Resource):
         """Fetch a car given its identifier."""
         car = Car.query.get_or_404(id)# if it doesnt exist it trows a 404
         return car
+
+    @car_ns.doc('update_car_status')
+    @car_ns.expect(car_ns.model('CarStatusUpdate', {
+        'status': fields.String(required=True, description='New rental status of the car')
+    }), validate=True)
+    @car_ns.response(200, 'Status updated successfully')
+    def put(self, id):
+        """Update the status of a car."""
+        car = Car.query.get_or_404(id)
+        data = request.get_json()
+        new_status = data.get('status')
+        if not new_status:
+            abort(400, 'Status is required to update.')
+
+        car.status = new_status
+        db.session.commit()
+        return {"message": "Car status updated successfully"}, 200
 
 
 @car_ns.route('/reserve/<int:id>', methods=['POST'])
