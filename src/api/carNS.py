@@ -62,6 +62,9 @@ class ListCars(Resource):
     def post(self):
         """Add a new car."""
         data = car_ns.payload
+        existing_car = Car.query.filter_by(id=data['id']).first()
+        if existing_car:
+            abort(400, "Car with this ID already exists")
         new_car = Car(**data)
         new_car.add_to_database()
         return new_car, 201
