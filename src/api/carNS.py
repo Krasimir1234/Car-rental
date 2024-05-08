@@ -1,7 +1,7 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields ,abort
 from ..model.car import Car, db
-from datetime import datetime
+from datetime import datetime ,date
 from ..model.Reservation import Reservation
 import logging
 from flask import session
@@ -61,7 +61,7 @@ class ListCars(Resource):
     @car_ns.marshal_with(car_model, code=201)
     def post(self):
         """Add a new car."""
-        data = car_ns.payload
+        data = car_ns.payload # Data from the request body
         existing_car = Car.query.filter_by(id=data['id']).first()
         if existing_car:
             abort(400, "Car with this ID already exists")
@@ -114,6 +114,12 @@ class ReserveCar(Resource):
 
             if not username:
                 return {"message": "User not authenticated"}, 401
+
+            if start_date < date.today():
+                return {"message": "Start date cannot be in the past"}, 400
+
+            if start_date >= end_date:
+                return {"message": "Start date must be before end date"}, 400
 
             # Check if car is available for these dates before making a reservation
             if Car.query.filter(Car.id == id).join(Reservation).filter(
