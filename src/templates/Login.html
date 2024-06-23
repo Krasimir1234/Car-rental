@@ -30,15 +30,15 @@
     const message = document.getElementById('message');
 
     form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission behavior
+        event.preventDefault();
 
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
-        // Construct the request payload
+
         const data = { username, password };
 
-        // Perform the fetch request
+
         fetch('/auth/login', {
             method: 'POST',
             headers: {
@@ -57,10 +57,10 @@
             console.log('Success:', data);
             message.textContent = "Login successful!";
 
-            // Store username in localStorage
+
             localStorage.setItem('username', data.username);
 
-            // Redirect after successful login
+
             window.location.href = '/home';
         })
         .catch((error) => {

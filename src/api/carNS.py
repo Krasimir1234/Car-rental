@@ -26,7 +26,6 @@ class ListCars(Resource):
     @car_ns.doc('list_cars')
     @car_ns.marshal_with(car_model, as_list=True)
     def get(self):
-        """List all cars or filter cars by location and availability."""
         location = request.args.get('location')
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
@@ -61,7 +60,7 @@ class ListCars(Resource):
     @car_ns.marshal_with(car_model, code=201)
     def post(self):
         """Add a new car."""
-        data = car_ns.payload # Data from the request body
+        data = car_ns.payload
         existing_car = Car.query.filter_by(id=data['id']).first()
         if existing_car:
             abort(400, "Car with this ID already exists")
@@ -77,7 +76,7 @@ class CarResource(Resource):
     @car_ns.marshal_with(car_model)
     def get(self, id):
         """Fetch a car given its identifier."""
-        car = Car.query.get_or_404(id)# if it doesnt exist it trows a 404
+        car = Car.query.get_or_404(id)
         return car
 
     @car_ns.doc('update_car_status')
@@ -110,7 +109,7 @@ class ReserveCar(Resource):
             data = request.get_json()
             start_date = datetime.strptime(data['start_date'], '%Y-%m-%d').date()
             end_date = datetime.strptime(data['end_date'], '%Y-%m-%d').date()
-            username = session.get('username')  # Retrieve username from session
+            username = session.get('username')
 
             if not username:
                 return {"message": "User not authenticated"}, 401
@@ -121,7 +120,6 @@ class ReserveCar(Resource):
             if start_date >= end_date:
                 return {"message": "Start date must be before end date"}, 400
 
-            # Check if car is available for these dates before making a reservation
             if Car.query.filter(Car.id == id).join(Reservation).filter(
                 (Reservation.start_date <= end_date) &
                 (Reservation.end_date >= start_date)).count() == 0:

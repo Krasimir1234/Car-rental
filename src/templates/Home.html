@@ -96,25 +96,24 @@ function reserveCar(carId) {
     const startDate = document.getElementById('start-date').value;
     const endDate = document.getElementById('end-date').value;
 
-    // Retrieve username from where it's stored (e.g., session or local storage)
+
     const username = localStorage.getItem('username');
     console.log('Retrieved username:', username);
 
 
-    // Check if username is available
     if (!username) {
         alert('Please log in to reserve a car.');
         return;
     }
 
-    // Construct the request payload including the username
+
     const data = {
         start_date: startDate,
         end_date: endDate,
-        username: username  // Include the username in the payload
+        username: username
     };
 
-    // Make the reservation request with the payload
+
     fetch(`/api/cars/reserve/${carId}`, {
         method: 'POST',
         headers: {

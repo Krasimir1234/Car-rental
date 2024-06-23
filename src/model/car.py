@@ -25,7 +25,7 @@ class Car(db.Model):
         self.location = location
         self.type = type
         self.gearbox = gearbox
-    def to_dict(self):# Takes the database data and makes it into a json
+    def to_dict(self):
         return {
             'id': self.id,
             'make': self.make,
@@ -37,10 +37,10 @@ class Car(db.Model):
             'type': self.type,
             'gearbox': self.gearbox
         }
-    def add_to_database(self):#We add the data to the databse
+    def add_to_database(self):
         db.session.add(self)
         db.session.commit()
 
     @staticmethod
-    def get_all_cars():# We get all the cars in the database
+    def get_all_cars():
         return Car.query.all()

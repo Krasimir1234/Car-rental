@@ -30,19 +30,19 @@
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('.login-form form');
         form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission behavior
+            event.preventDefault();
 
             const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value; // Get password value
-            if (!username || !password) { // Check both username and password
-                alert('Username and password are required'); // Updated alert message
+            const password = document.getElementById('password').value;
+            if (!username || !password) {
+                alert('Username and password are required');
                 return;
             }
 
-            // Construct the request payload
-            const data = { username, password }; // Include password in payload
 
-            // Perform the fetch request
+            const data = { username, password };
+
+
             fetch(form.action, {
                 method: 'POST',
                 headers: {
@@ -60,8 +60,8 @@
             .then(data => {
                 console.log('Success:', data);
                 alert('Sign up successful!');
-                // Redirect after sign up or update the page state
-                // window.location.href = '/dashboard'; // Redirect to a new page
+
+
             })
             .catch((error) => {
                 console.error('Error:', error);

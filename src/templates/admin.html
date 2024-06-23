@@ -43,7 +43,7 @@ document.getElementById('fetch-car-btn').addEventListener('click', function() {
         return;
     }
 
-    fetch(`/api/cars/${inputId}`)  // Fetching car details by ID
+    fetch(`/api/cars/${inputId}`)
     .then(response => {
         if (!response.ok) {
             if (response.status === 404) {
@@ -55,9 +55,7 @@ document.getElementById('fetch-car-btn').addEventListener('click', function() {
     })
     .then(car => {
         const carContainer = document.getElementById('car-container');
-        carContainer.innerHTML = ''; // Clear previous contents
-
-        // Build the car details card
+        carContainer.innerHTML = '';
         const carCard = document.createElement('div');
         carCard.classList.add('car-card');
         const carName = document.createElement('h2');
@@ -84,7 +82,7 @@ document.getElementById('fetch-car-btn').addEventListener('click', function() {
     .catch(error => {
         console.error('Error fetching data:', error);
         const carContainer = document.getElementById('car-container');
-        carContainer.innerHTML = `<p>${error.message}</p>`; // Show error message in the UI
+        carContainer.innerHTML = `<p>${error.message}</p>`;
     });
 });
 
@@ -92,7 +90,7 @@ document.getElementById('fetch-car-btn').addEventListener('click', function() {
 
 function submitCarDetails() {
     const carDetails = {
-        id: parseInt(document.getElementById('car-id').value, 10), // Ensure there is an input field for car ID in the HTML
+        id: parseInt(document.getElementById('car-id').value, 10),
         make: document.getElementById('car-make').value,
         model: document.getElementById('car-model').value,
         year: parseInt(document.getElementById('car-year').value, 10),
@@ -103,7 +101,7 @@ function submitCarDetails() {
         gearbox: document.getElementById('car-gearbox').value
     };
 
-    // Checking if the ID is a valid number
+
     if (isNaN(carDetails.id)) {
         alert('Please enter a valid ID');
         return;
@@ -156,7 +154,7 @@ function updateCarStatus(carId, newStatus) {
     .then(data => {
         if (data.success) {
             alert('Status updated successfully!');
-            fetchCarDetails(carId);  // Optionally refresh the displayed car details
+            fetchCarDetails(carId);
         } else {
             alert('Failed to update status: ' + data.message);
         }
